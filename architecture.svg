@@ -1,0 +1,77 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="560" viewBox="0 0 960 560" font-family="Segoe UI, Helvetica, Arial, sans-serif">
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#4a6fa5"/>
+    </marker>
+    <marker id="arrowGreen" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#3d8b5f"/>
+    </marker>
+    <marker id="arrowRed" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#c0564d"/>
+    </marker>
+  </defs>
+
+  <rect x="0" y="0" width="960" height="560" rx="16" fill="#f7f9fc"/>
+  <text x="480" y="42" text-anchor="middle" font-size="24" font-weight="700" fill="#1f2d3d">GitOps Reconciliation Loop</text>
+  <text x="480" y="66" text-anchor="middle" font-size="13" fill="#6b7a90">Desired state lives in Git — an in-cluster agent keeps the cluster converged to it</text>
+
+  <!-- Developer -->
+  <rect x="40" y="130" width="170" height="120" rx="12" fill="#ffffff" stroke="#4a6fa5" stroke-width="2"/>
+  <text x="125" y="160" text-anchor="middle" font-size="30">👩‍💻</text>
+  <text x="125" y="190" text-anchor="middle" font-size="15" font-weight="700" fill="#1f2d3d">Developer</text>
+  <text x="125" y="210" text-anchor="middle" font-size="12" fill="#6b7a90">edits manifests</text>
+  <text x="125" y="226" text-anchor="middle" font-size="12" fill="#6b7a90">&amp; opens a PR</text>
+
+  <!-- Git repo -->
+  <rect x="300" y="130" width="170" height="120" rx="12" fill="#ffffff" stroke="#4a6fa5" stroke-width="2"/>
+  <text x="385" y="160" text-anchor="middle" font-size="30">📦</text>
+  <text x="385" y="190" text-anchor="middle" font-size="15" font-weight="700" fill="#1f2d3d">Git Repo</text>
+  <text x="385" y="210" text-anchor="middle" font-size="12" fill="#6b7a90">single source of truth</text>
+  <text x="385" y="226" text-anchor="middle" font-size="12" fill="#6b7a90">desired state</text>
+
+  <!-- GitOps agent -->
+  <rect x="560" y="130" width="170" height="120" rx="12" fill="#eef4ff" stroke="#4a6fa5" stroke-width="2"/>
+  <text x="645" y="160" text-anchor="middle" font-size="30">🔄</text>
+  <text x="645" y="190" text-anchor="middle" font-size="15" font-weight="700" fill="#1f2d3d">GitOps Agent</text>
+  <text x="645" y="210" text-anchor="middle" font-size="12" fill="#6b7a90">Argo CD / Flux</text>
+  <text x="645" y="226" text-anchor="middle" font-size="12" fill="#6b7a90">watches + reconciles</text>
+
+  <!-- Kubernetes cluster -->
+  <rect x="730" y="330" width="190" height="170" rx="12" fill="#ffffff" stroke="#3d8b5f" stroke-width="2"/>
+  <text x="825" y="360" text-anchor="middle" font-size="15" font-weight="700" fill="#1f2d3d">☸️ Kubernetes Cluster</text>
+  <rect x="745" y="372" width="160" height="34" rx="8" fill="#eaf6ef" stroke="#3d8b5f"/>
+  <text x="825" y="394" text-anchor="middle" font-size="12" fill="#1f2d3d">argocd (agent)</text>
+  <rect x="745" y="412" width="160" height="34" rx="8" fill="#eaf6ef" stroke="#3d8b5f"/>
+  <text x="825" y="434" text-anchor="middle" font-size="12" fill="#1f2d3d">demo-web (app)</text>
+  <rect x="745" y="452" width="160" height="34" rx="8" fill="#eaf6ef" stroke="#3d8b5f"/>
+  <text x="825" y="474" text-anchor="middle" font-size="12" fill="#1f2d3d">monitoring</text>
+
+  <!-- Arrows: dev -> git -->
+  <line x1="212" y1="190" x2="292" y2="190" stroke="#4a6fa5" stroke-width="2.5" marker-end="url(#arrow)"/>
+  <text x="252" y="178" text-anchor="middle" font-size="12" font-weight="600" fill="#4a6fa5">git push</text>
+
+  <!-- Arrows: git -> agent (watch) -->
+  <line x1="472" y1="190" x2="552" y2="190" stroke="#4a6fa5" stroke-width="2.5" marker-end="url(#arrow)"/>
+  <text x="512" y="178" text-anchor="middle" font-size="12" font-weight="600" fill="#4a6fa5">1 · detect</text>
+
+  <!-- Arrows: agent -> cluster (sync) -->
+  <path d="M 700 250 C 700 320, 760 340, 800 360" stroke="#3d8b5f" stroke-width="2.5" fill="none" marker-end="url(#arrowGreen)"/>
+  <text x="742" y="300" text-anchor="middle" font-size="12" font-weight="600" fill="#3d8b5f">2 · sync</text>
+
+  <!-- Drift report back: cluster -> agent -->
+  <path d="M 830 330 C 800 280, 720 260, 690 252" stroke="#c0564d" stroke-width="2" stroke-dasharray="7,4" fill="none" marker-end="url(#arrowRed)"/>
+  <text x="795" y="272" text-anchor="middle" font-size="12" font-weight="600" fill="#c0564d">live state</text>
+
+  <!-- Self-heal loop around agent -->
+  <path d="M 560 165 C 540 165, 540 225, 560 225" stroke="#4a6fa5" stroke-width="2" stroke-dasharray="7,4" fill="none" marker-end="url(#arrow)"/>
+  <text x="470" y="270" font-size="12" fill="#4a6fa5">3 · compare desired vs actual</text>
+  <text x="470" y="288" font-size="12" fill="#4a6fa5">4 · auto-heal drift (selfHeal)</text>
+
+  <!-- Legend -->
+  <rect x="40" y="430" width="620" height="90" rx="12" fill="#ffffff" stroke="#d9e2ec"/>
+  <text x="60" y="456" font-size="13" font-weight="700" fill="#1f2d3d">Reading the loop</text>
+  <text x="60" y="478" font-size="12" fill="#4a6fa5">● 1 · detect — agent polls Git, a new commit triggers reconciliation</text>
+  <text x="60" y="498" font-size="12" fill="#3d8b5f">● 2 · sync — agent applies manifests; prune removes what Git deleted</text>
+  <text x="340" y="478" font-size="12" fill="#c0564d">● live state — cluster reports actual state back</text>
+  <text x="340" y="498" font-size="12" fill="#4a6fa5">● 3–4 · loop — drift (e.g. kubectl edit) is reverted automatically</text>
+</svg>

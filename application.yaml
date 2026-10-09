@@ -1,0 +1,90 @@
+# ─────────────────────────────────────────────────────────────
+# GitOps in one file: an Argo CD Application plus the sample app
+# it manages. Commit this, apply the Application once, and from
+# then on every change flows through Git — never kubectl.
+# ─────────────────────────────────────────────────────────────
+
+# 1) The GitOps contract: "this Git path == this namespace"
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: demo-web
+  namespace: argocd            # where Argo CD itself runs
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/sepkascurty-cpu/kubernetes-gitops-guide
+    targetRevision: HEAD
+    path: apps/demo-web        # manifests live under this path in Git
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: demo-web
+  syncPolicy:
+    automated:
+      prune: true              # delete resources removed from Git
+      selfHeal: true           # revert manual kubectl edits (drift)
+    syncOptions:
+      - CreateNamespace=true
+
+---
+# 2) The app itself — what the agent keeps converged to Git
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: demo-web
+  namespace: demo-web
+  labels:
+    app: demo-web
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: demo-web
+  template:
+    metadata:
+      labels:
+        app: demo-web
+    spec:
+      containers:
+        - name: web
+          image: nginx:1.27-alpine
+          ports:
+            - containerPort: 80
+          resources:
+            requests:
+              cpu: 50m
+              memory: 64Mi
+            limits:
+              cpu: 200m
+              memory: 128Mi
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 80
+            periodSeconds: 10
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: demo-web
+  namespace: demo-web
+spec:
+  selector:
+    app: demo-web
+  ports:
+    - port: 80
+      targetPort: 80
+  type: ClusterIP
+
+# ─────────────────────────────────────────────────────────────
+# Try it (needs a cluster with Argo CD installed):
+#
+#   kubectl apply -f application.yaml
+#   argocd app get demo-web          # watch the sync happen
+#
+# Then experiment the GitOps way:
+#   1. Bump replicas to 5 in THIS file and commit → agent scales up.
+#   2. Run: kubectl scale deploy/demo-web -n demo-web --replicas=1
+#      → selfHeal reverts it within seconds. Drift doesn't survive.
+# ─────────────────────────────────────────────────────────────
