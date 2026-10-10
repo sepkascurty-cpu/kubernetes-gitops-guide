@@ -13,11 +13,10 @@
 GitOps flips the deployment model: instead of your CI pipeline **pushing** changes into the cluster (`kubectl apply` from Jenkins), an in-cluster agent **pulls** the desired state from Git and reconciles it continuously. Git becomes the single source of truth — every change is a commit: reviewable, auditable, and instantly roll-back-able.
 
 ```mermaid
-Developer → git push → Git Repo (desired state)
-                            ↓  watches
-                       Argo CD / Flux (in-cluster agent)
-                            ↓  applies & reconciles
-                       Kubernetes Cluster (actual state)
+flowchart TB
+    Dev["Developer"] -->|git push| Repo["Git Repo<br/>(desired state)"]
+    Repo -->|watches| Agent["Argo CD / Flux<br/>(in-cluster agent)"]
+    Agent -->|applies & reconciles| Cluster["Kubernetes Cluster<br/>(actual state)"]
 ```
 
 ## The Problem With Push-Based Deployments
